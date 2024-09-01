@@ -1,5 +1,6 @@
 ### Proxy server
 GET http://localhost:4000/path/to/real-server/but/no/proxy-server/  
-
+###
+GET http://localhost:4000/is/real?query=asdf
 ### Real server
 GET http://localhost:3000
