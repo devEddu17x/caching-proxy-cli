@@ -1,0 +1,5 @@
+### Proxy server
+GET http://localhost:4000/path/to/real-server/but/no/proxy-server/  
+
+### Real server
+GET http://localhost:3000
