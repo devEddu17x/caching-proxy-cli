@@ -5,7 +5,7 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify( {
         message: 'Request has been received from real server',
         method: req.method,
-        url: req.url,
+        'url-in-real-server': req.url,
         }));
 })
 
