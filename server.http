@@ -1,6 +1,14 @@
 ### Proxy server
-GET http://localhost:4000/path/to/real-server/but/no/proxy-server/  
-###
-GET http://localhost:4000/is/real?query=asdf
+GET http://localhost:4000/  
+    
 ### Real server
 GET http://localhost:3000
+###
+GET http://localhost:4000/is/real?query=asdf    
+###
+
+GET http://localhost:4000
+###
+GET https://dogapi.dog/api/v2/breeds
+###
+GET https://www.facebook.com                            
