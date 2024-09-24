@@ -1,4 +1,4 @@
-import { cache } from "./cache.js"
+import { cache } from './cache.js'
 export const get = (url) => {
-    return cache[url];
+  return cache.get(url)
 }

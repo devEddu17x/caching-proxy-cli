@@ -1,1 +1,1 @@
-export const cache = {}
+export const cache = new Map()
