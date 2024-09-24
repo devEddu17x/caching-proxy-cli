@@ -21,11 +21,16 @@ const server = http.createServer((req, res) => {
   const targetUrl = new URL(req.url, baseURL)
   const cacheResponse = get(targetUrl.href)
   if (cacheResponse) {
+    console.log('Cache hit')
+    console.log('typeof cacheResponse', typeof cacheResponse)
+    console.log('cacheResponse', cacheResponse)
     res.writeHead(200, {
       ...cacheResponse.headers,
       'X-Cache': 'HIT'
     })
-    res.end(JSON.stringify(cacheResponse))
+
+    const content = cacheResponse.body.toString('utf-8')
+    res.end(content)
     return
   }
   const options = {
@@ -38,41 +43,31 @@ const server = http.createServer((req, res) => {
   // sending request to real server
   const requestToRealServer = http.request(options, (realServerResponse) => {
     const chunks = []
-    const contentType = realServerResponse.headers['content-type']
-
     realServerResponse.on('data', (chunk) => {
       chunks.push(chunk)
+      console.log('Data received from real server')
     })
-
     realServerResponse.on('end', () => {
-      let body = Buffer.concat(chunks)
-
-      if (contentType && contentType.includes('application/json')) {
-        try {
-          body = JSON.parse(body.toString())
-        } catch (e) {
-          console.log('Error parsing JSON', e)
-        }
-      } else if (contentType && contentType.startsWith('text/')) {
-        body = body.toString()
-      }
-
+      const body = Buffer.concat(chunks)
+      // console.log(realServerResponse.headers['content-type'])
       set(targetUrl.href, {
         headers: realServerResponse.headers,
         body
       })
-
+      console.log('headers from real server:')
+      console.log('headers:', realServerResponse.headers)
       res.writeHead(realServerResponse.statusCode, {
         ...realServerResponse.headers,
         'X-Cache': 'MISS'
       })
 
-      res.end(typeof body === 'string' ? body : Buffer.from(body))
+      res.end(Buffer.from(body))
     })
   })
   // error handling
   requestToRealServer.on('error', (e) => {
-    console.log('Problem with request to real server: ', e.message)
+    console.log('Problem with request to real server: ')
+    console.log(e.message)
     res.writeHead(500, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ message: 'Problem with request to real server', url: targetUrl.href }))
   })
